@@ -6,3 +6,14 @@ node_modules
 # CDK asset staging directory
 .cdk.staging
 cdk.out
+/package-lock.json
+# Default ignored files
+/shelf/
+/workspace.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+/aws-upload-cdk.iml
+/.idea/aws-upload-cdk.iml
+/.idea/modules.xml
+/.idea/vcs.xml
+/.idea/workspace.xml
