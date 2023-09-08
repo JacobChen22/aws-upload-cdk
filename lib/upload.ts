@@ -1,6 +1,6 @@
 import {Construct} from 'constructs';
 import {NodejsFunction} from 'aws-cdk-lib/aws-lambda-nodejs';
-import {LambdaRestApi} from 'aws-cdk-lib/aws-apigateway';
+import {Cors, LambdaRestApi} from 'aws-cdk-lib/aws-apigateway';
 import * as lambda from 'aws-cdk-lib/aws-lambda'
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 
@@ -24,8 +24,31 @@ export class Upload extends Construct {
 
         props.table.grantReadWriteData(uploadFunction);
 
-        new LambdaRestApi(this, 'apigw', {
+        const lambdaUploadApi = new LambdaRestApi(this, 'apigw', {
             handler: uploadFunction,
+            proxy: true,
+            defaultCorsPreflightOptions: {
+                allowOrigins: Cors.ALL_ORIGINS,
+                allowMethods: Cors.ALL_METHODS
+            }
         });
+
+        // Below codes for enable Cognito on API-Gateway
+        /*
+        const userPool = new UserPool(this, 'userPool', {
+            signInAliases: {
+                email: true
+            }
+        });
+        const authorizer = new CognitoUserPoolsAuthorizer(this, 'lambdaAuthorizer', {
+            cognitoUserPools: [userPool]
+        });
+        const upload = lambdaUploadApi.root.addResource('UPLOAD');
+        upload.addMethod('PUT', new LambdaIntegration(uploadFunction), {
+            authorizationType: AuthorizationType.COGNITO,
+            authorizer: authorizer
+        });
+        */
+
     }
 }
